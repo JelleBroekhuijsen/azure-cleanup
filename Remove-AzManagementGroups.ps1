@@ -43,25 +43,27 @@ $assignments | ForEach-Object -Parallel {
 }
 
 #Remove the entire hierachy of management groups
+Write-Output "Attempting to remove $($managementGroups.Count) management groups"
 $lingeringManagementGroupCount = 0 
 do{
   $managementGroups | ForEach-Object -Parallel {
     $managementGroup = Get-AzManagementGroup -GroupName $_.Name -ErrorAction SilentlyContinue
     if($null -ne $managementGroup){
-      Write-Output "Attempting to remove management group: $($_.Name)"
-      Remove-AzManagementGroup -GroupName $_.Name -ErrorAction SilentlyContinue
+      Write-Output "Attempting to remove management group: $($managementGroup.Name)"
+      Remove-AzManagementGroup -GroupName $managementGroup.Name -ErrorAction SilentlyContinue
     }
     else{
-      Write-Output "Deleted management group: $($_.Name) added to lingering management group count"
+      Write-Output "Deleted management group '$($_.Name)' added to lingering management group count"
       $lingeringManagementGroupCount++
     }
   }
   $managementGroups = Get-AzManagementGroup | Where-Object { $_.Name -ne $TenantId }
   if($managementGroups.Count -gt 0 -and $lingeringManagementGroupCount -lt $managementGroups.Count){
-    Write-Output "Found $($managementGroups.Count - $lingeringManagementGroupCount) management groups to remove"
+    Write-Output "Found $($managementGroups.Count - $lingeringManagementGroupCount) remaining management groups to remove"
     Write-Output "Waiting 30 seconds before retrying"
+    $lingeringManagementGroupCount = 0
     Start-Sleep -Seconds 30
   }
 }
-while($managementGroups.Count -gt 0)
+while($managementGroups.Count -gt 0 -and $lingeringManagementGroupCount -lt $managementGroups.Count)
 Write-Output "Successfully removed all management groups"

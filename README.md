@@ -1,18 +1,23 @@
 # Azure Cleanup
 
-This repository contains a set of scripts to cleanup Azure scripts and resources.
+This repository contains a set of scripts and workflows to cleanup an Azure tenant. This is useful for demo environments where you want to keep the cost low. The scripts are designed to be run as GitHub Actions, but can also be run locally.
 
 ## Current features
 
-- Perform daily cleanup of Azure Resource Groups that do not have a tag of 'persist' set to 'true'.
+![Azure Resource Cleanup](https://github.com/JelleBroekhuijsen/azure-cleanup/actions/workflows/azure-resource-cleanup.yml/badge.svg)
+![Azure Management Group Cleanup](https://github.com/JelleBroekhuijsen/azure-cleanup/actions/workflows/azure-management-group-cleanup.yml/badge.svg)
+
+- Perform daily cleanup of Azure Resource Groups that do not have a tag of 'persistent' set to 'true'.
+- Perform a manually triggered cleanup of Azure Management Groups.
 
 ## Requirements
 
-The solution utilizes a Service Principal to perform the cleanup. The Service Principal must have the following permissions:
+The workflows utilize a Service Principal to perform the cleanup. The Service Principal must have the following permissions:
 
-- Contributor on the subscriptions you want to cleanup.
+- Contributor on the subscriptions if you want to perform resource cleanup.
+- Owner on the root tenant group if you want to perform management group cleanup.
 
-The service principal relies on OIDC authentication.
+The workflows rely on OpenId Connect for authentication. See [this](https://learn.microsoft.com/en-us/azure/developer/github/connect-from-azure?tabs=azure-portal%2Cwindows#use-the-azure-login-action-with-openid-connect) for info on how to configure your SPN for OIDC-authentication.
 
 ## Setup
 

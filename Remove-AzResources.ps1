@@ -8,7 +8,7 @@
 .PARAMETER SubscriptionId
   The subscription id to run the script against
 .NOTES
-  Version:        1.0
+  Version:        1.1.0
   Author:         Jelle Broekhuijsen - jll.io Consultancy
   Creation Date:  8/8/2023
   
@@ -30,17 +30,34 @@ $subscription = Set-AzContext -SubscriptionId $SubscriptionId
 Write-Output "Connected to Azure subscription: $($subscription.Name)"
 
 #Get all resource groups that are not tagged with 'persistent = true'
-$resourceGroups = Get-AzResourceGroup | Where-Object {$_.Tags['persistent'] -ne 'true'}
+$resourceGroups = Get-AzResourceGroup
+$resourceGroupsWithoutPersistence = @()
 
-Write-Output "Found $($ResourceGroups.Count) resource groups to remove"
+$resourceGroups | ForEach-Object -Parallel {
+    if($null -eq $_.Tags){
+        Write-Output "Resource group '$($_.ResourceGroupName)' has no tags, marking for removal..."
+        $resourceGroupsWithoutPersistence += $_
+    }
+    elseif($null -eq $_.Tags.persistent){
+        Write-Output "Resource group '$($_.ResourceGroupName)' has no 'persistent' tag, marking for removal..."
+        $resourceGroupsWithoutPersistence += $_
+    }
+    elseif($_.Tags.persistent -ne 'true'){
+        Write-Output "Resource group '$($_.ResourceGroupName)' has 'persistent' tag set to '$($_.Tags.persistent)', marking for removal..."
+        $resourceGroupsWithoutPersistence += $_
+    }
+}
 
-if($resourceGroups.Count -eq 0){
+Write-Output "Found $($resourceGroupsWithoutPersistence.Count) resource groups to remove"
+
+#Terminate if no resource groups are found
+if($resourceGroupsWithoutPersistence.Count -eq 0){
     Write-Output "No resource groups to remove"
     break
 }
 
-$resourceGroups | ForEach-Object -Parallel {
-    #Remove resource group
+#Remove resource groups
+$resourceGroupsWithoutPersistence | ForEach-Object -Parallel {
     Write-Output "Removing resource group: $($_.ResourceGroupName)"
     $result = Remove-AzResourceGroup -Name $_.ResourceGroupName -Force
 

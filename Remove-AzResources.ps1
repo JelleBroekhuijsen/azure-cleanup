@@ -27,7 +27,7 @@ $ErrorActionPreference = 'SilentlyContinue'
 
 #Set subscription context
 $subscription = Set-AzContext -SubscriptionId $SubscriptionId
-Write-Output "Connected to Azure subscription: $($subscription.Subscription.Name)"
+Write-Output "Connected to Azure subscription: $($subscription.Name)"
 
 #Get all resource groups that are not tagged with 'persistent = true'
 $resourceGroups = Get-AzResourceGroup | Where-Object {$_.Tags['persistent'] -ne 'true'}

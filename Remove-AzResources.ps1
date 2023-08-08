@@ -5,8 +5,8 @@
   Script to delete resource groups that are not tagged with 'persistent = true' for a given subscription
 .DESCRIPTION
   Script to delete resource groups that are not tagged with 'persistent = true' for a given subscription
-.PARAMETER <Parameter_Name>
-    SubscriptionId - The subscription id to run the script against
+.PARAMETER SubscriptionId
+  The subscription id to run the script against
 .NOTES
   Version:        1.0
   Author:         Jelle Broekhuijsen - jll.io Consultancy
@@ -18,7 +18,7 @@
 
 [CmdletBinding()]
 param (
-    [Parameter()]
+    [Parameter(Mandatory)]
     [string]
     $SubscriptionId
 )

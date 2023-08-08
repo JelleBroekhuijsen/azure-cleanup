@@ -1,25 +1,44 @@
 # .github/workflows/azure-cleanup.yml
 name: Clean-up Azure Resources
 
-on: [push]
+on:
+    workflow_dispatch: # allows to run manually    
+    schedule: 
+        - cron: '0 0 * * *' # every day at midnight
 
 permissions:
   id-token: write
   contents: read
 
 jobs:
-  prepare-backend:
+  setup-matrix:
+    runs-on: ubuntu-latest
+    outputs: 
+      matrix: ${{ steps.setVariables.outputs.matrix }}
+    steps:
+      - id: setVariables
+        run: |
+          echo "::set-output name=matrix::$input"
+        env:
+          input: ${{ vars.AZURE_SUBSCRIPTION_IDS }}
+  azure-cleanup-matrix:
+    needs: setup-matrix
+    strategy:
+        matrix: 
+          subscription_id: ${{ fromJson(needs.setup-matrix.outputs.matrix) }}
     runs-on: ubuntu-latest
     steps:
-    - name: Azure Login
+    - name: Check Out
+      uses: actions/checkout@v3
+    - name: Azure Login on subscription '${{ matrix.subscription_id }}'
       uses: azure/login@v1
       with:
         client-id: ${{ secrets.AZURE_CLIENT_ID }}
         tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-        subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }} 
+        subscription-id: ${{ matrix.subscription_id }}
         enable-AzPSSession: true
-    # - name: Create Resource Group
-    #   uses: azure/powershell@v1
-    #   with:
-    #     inlineScript: |
-    #     azPSVersion: latest
+    - name: Execute script for subscription '${{ matrix.subscription_id }}'
+      uses: azure/powershell@v1
+      with:
+        inlineScript: ./Remove-AzResources.ps1 -SubscriptionId ${{ matrix.subscription_id }}
+        azPSVersion: latest

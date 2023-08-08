@@ -1,4 +1,4 @@
-# .github/workflows/azure-cleanup.yml
+# .github/workflows/azure-resource-cleanup.yml
 name: Clean-up Azure Resources
 
 on:
@@ -21,7 +21,7 @@ jobs:
           echo "::set-output name=matrix::$input"
         env:
           input: ${{ vars.AZURE_SUBSCRIPTION_IDS }}
-  azure-cleanup-matrix:
+  azure-resource-cleanup-matrix:
     needs: setup-matrix
     strategy:
         matrix: 

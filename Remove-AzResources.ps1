@@ -8,7 +8,7 @@
 .PARAMETER SubscriptionId
   The subscription id to run the script against
 .NOTES
-  Version:        1.1.0
+  Version:        1.1.1
   Author:         Jelle Broekhuijsen - jll.io Consultancy
   Creation Date:  8/8/2023
   
@@ -31,20 +31,21 @@ Write-Output "Connected to Azure subscription: $($subscription.Name)"
 
 #Get all resource groups that are not tagged with 'persistent = true'
 $resourceGroups = Get-AzResourceGroup
-$resourceGroupsWithoutPersistence = @()
+$resourceGroupsWithoutPersistence = [System.Collections.Concurrent.ConcurrentBag[PSObject]]::new()
 
 $resourceGroups | ForEach-Object -Parallel {
+    $localResourceGroupList = $using:resourceGroupsWithoutPersistence
     if($null -eq $_.Tags){
         Write-Output "Resource group '$($_.ResourceGroupName)' has no tags, marking for removal..."
-        $resourceGroupsWithoutPersistence += $_
+        $localResourceGroupList.Add($_)
     }
     elseif($null -eq $_.Tags.persistent){
         Write-Output "Resource group '$($_.ResourceGroupName)' has no 'persistent' tag, marking for removal..."
-        $resourceGroupsWithoutPersistence += $_
+        $localResourceGroupList.Add($_)
     }
     elseif($_.Tags.persistent -ne 'true'){
         Write-Output "Resource group '$($_.ResourceGroupName)' has 'persistent' tag set to '$($_.Tags.persistent)', marking for removal..."
-        $resourceGroupsWithoutPersistence += $_
+        $localResourceGroupList.Add($_)
     }
 }
 

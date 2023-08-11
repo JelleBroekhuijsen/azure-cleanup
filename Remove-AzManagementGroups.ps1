@@ -8,7 +8,7 @@
 .PARAMETER TenantId
   The tenant id to run the script against
 .NOTES
-  Version:        1.0.0
+  Version:        1.1.0
   Author:         Jelle Broekhuijsen - jll.io Consultancy
   Creation Date:  8/8/2023
   

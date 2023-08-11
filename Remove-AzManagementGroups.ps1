@@ -45,7 +45,7 @@ $assignments | ForEach-Object -Parallel {
   $localFailures = $using:failures
   Write-Output "Reset subscription: $(($_.Id -split '/')[-1]) to root group"
   $result = Remove-AzManagementGroupSubscription -GroupName ($_.Parent -split '/')[-1]  -SubscriptionId ($_.Id -split '/')[-1]
-  if($null -ne $result) {
+  if($result -ne $true) {
     Write-Warning "Failed to reset subscription: $(($_.Id -split '/')[-1]) to root group"
     $localFailures.Add($result)
   }
@@ -63,7 +63,7 @@ do {
     if ($null -ne $managementGroup) {
       Write-Output "Attempting to remove management group: $($managementGroup.Name)"
       $result = Remove-AzManagementGroup -GroupName $managementGroup.Name -ErrorAction Continue
-      if ($null -ne $result) {
+      if ($result -ne $true) {
         Write-Warning "Failed to remove management group: $($managementGroup.Name)"
         $localFailures.Add($result)
       }

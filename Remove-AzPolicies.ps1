@@ -21,35 +21,35 @@ $ErrorActionPreference = 'Continue'
 
 #Retrieve all custom Azure Policy definitions and initiatives
 $policies = Get-AzPolicyDefinition -ErrorAction Stop | Where-Object { $_.Properties.PolicyType -eq 'Custom' }
-
 $initiatives = Get-AzPolicySetDefinition -ErrorAction Stop| Where-Object { $_.Properties.PolicyType -eq 'Custom' }
 
 #Create a concurrent bag to store failures
 $failures = [System.Collections.Concurrent.ConcurrentBag[PSObject]]::new()
-
-#Remove all custom policies
-Write-Output "Found $($policies.Count) custom policies to remove"
-$policies | ForEach-Object -Parallel {
-  $localFailures = $using:failures
-  Write-Output "Removing policy '$($_.Properties.DisplayName)'"
-  $result = Remove-AzPolicyDefinition -Name $_.Name -Force
-  if ($null -eq $result) {
-    Write-Warning "Failed to remove policy '$($_.Properties.DisplayName)'"
-    $localFailures.Add($_)
-  }
-}
 
 #Remove all custom initiatives
 Write-Output "Found $($initiatives.Count) custom initiatives to remove"
 $initiatives | ForEach-Object -Parallel {
   $localFailures = $using:failures
   Write-Output "Removing initiative '$($_.Properties.DisplayName)'"
-  $result = Remove-AzPolicySetDefinition -Name $_.Name -Force
-  if ($null -eq $result) {
+  $result = Remove-AzPolicySetDefinition -Id $_.Id -Force
+  if ($result -ne $true) {
     Write-Warning "Failed to remove initiative '$($_.Properties.DisplayName)'"
     $localFailures.Add($_)
   }
 }
+
+#Remove all custom policies
+Write-Output "Found $($policies.Count) custom policies to remove"
+$policies | ForEach-Object -Parallel {
+  $localFailures = $using:failures
+  Write-Output "Removing policy '$($_.Properties.DisplayName)'"
+  $result = Remove-AzPolicyDefinition -Id $_.Id -Force
+  if ($result -ne $true) {
+    Write-Warning "Failed to remove policy '$($_.Properties.DisplayName)'"
+    $localFailures.Add($_)
+  }
+}
+
 
 #Report failures
 if ($failures.Count -gt 0) {

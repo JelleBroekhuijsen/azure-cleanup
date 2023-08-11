@@ -66,11 +66,7 @@ $resourceGroupsWithoutPersistence | ForEach-Object -Parallel {
   Write-Output "Removing resource group: $($_.ResourceGroupName)"
   $result = Remove-AzResourceGroup -Name $_.ResourceGroupName -Force
 
-  if ($result -eq $true) {
-    Write-Output "Successfully removed resource group: $($_.ResourceGroupName)"
-  }
-  else {
-    $localFailures.Add($_)
+  if ($result -ne $true) {
     Write-Warning "Failed to remove resource group: $($_.ResourceGroupName)"
   }
 }

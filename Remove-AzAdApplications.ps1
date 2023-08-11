@@ -45,7 +45,7 @@ $applicationForRemoval | ForEach-Object -Parallel {
   $localFailures = $using:failures
   Write-Output "Removing application '$($_.DisplayName)'"
   $result = Remove-AzADApplication -ObjectId $_.Id -Force
-  if ($null -eq $result) {
+  if ($result -ne $true) {
     Write-Warning "Failed to remove application '$($_.DisplayName)'"
     $localFailures.Add($_)
   }

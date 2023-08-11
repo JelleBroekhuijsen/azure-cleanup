@@ -8,7 +8,7 @@
 .PARAMETER SubscriptionId
   The subscription id to run the script against
 .NOTES
-  Version:        1.1.1
+  Version:        1.1.2
   Author:         Jelle Broekhuijsen - jll.io Consultancy
   Creation Date:  8/8/2023
   

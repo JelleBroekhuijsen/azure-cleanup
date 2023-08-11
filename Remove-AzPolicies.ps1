@@ -6,7 +6,7 @@
 .DESCRIPTION
   Script to delete all custom policies in a tenant
 .NOTES
-  Version:        1.0.0
+  Version:        1.0.1
   Author:         Jelle Broekhuijsen - jll.io Consultancy
   Creation Date:  11/8/2023
   
@@ -51,6 +51,7 @@ $initiatives | ForEach-Object -Parallel {
   }
 }
 
+#Report failures
 if ($failures.Count -gt 0) {
   Throw "Failed to remove $($failures.count) policies/initiatives"
 }

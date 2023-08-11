@@ -30,7 +30,7 @@ $subscription = Set-AzContext -SubscriptionId $SubscriptionId
 Write-Output "Connected to Azure subscription: $($subscription.Name)"
 
 #Get all resource groups that are not tagged with 'persistent = true'
-$resourceGroups = Get-AzResourceGroup
+$resourceGroups = Get-AzResourceGroup -ErrorAction Stop
 $resourceGroupsWithoutPersistence = [System.Collections.Concurrent.ConcurrentBag[PSObject]]::new()
 
 #Create a concurrent bag to store failures

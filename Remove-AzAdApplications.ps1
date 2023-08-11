@@ -23,7 +23,7 @@ $ErrorActionPreference = 'Continue'
 $failures = [System.Collections.Concurrent.ConcurrentBag[PSObject]]::new()
 
 #Get all application registrations
-$applications = Get-AzADApplication
+$applications = Get-AzADApplication -ErrorAction Stop
 
 #Create a concurrent bag to store applications for removal
 $applicationForRemoval = [System.Collections.Concurrent.ConcurrentBag[PSObject]]::new()

@@ -17,12 +17,12 @@
 [CmdletBinding()]
 param()
 
-$ErrorActionPreference = 'Stop'
+$ErrorActionPreference = 'Continue'
 
 #Retrieve all custom Azure Policy definitions and initiatives
-$policies = Get-AzPolicyDefinition | Where-Object { $_.Properties.PolicyType -eq 'Custom' }
+$policies = Get-AzPolicyDefinition -ErrorAction Stop | Where-Object { $_.Properties.PolicyType -eq 'Custom' }
 
-$initiatives = Get-AzPolicySetDefinition | Where-Object { $_.Properties.PolicyType -eq 'Custom' }
+$initiatives = Get-AzPolicySetDefinition -ErrorAction Stop| Where-Object { $_.Properties.PolicyType -eq 'Custom' }
 
 #Create a concurrent bag to store failures
 $failures = [System.Collections.Concurrent.ConcurrentBag[PSObject]]::new()

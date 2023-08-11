@@ -27,7 +27,7 @@ $ErrorActionPreference = 'Continue'
 $errorCount = 0
 
 #Get all management groups except the root group
-$managementGroups = Get-AzManagementGroup | Where-Object { $_.Name -ne $TenantId }
+$managementGroups = Get-AzManagementGroup -ErrorAction Stop | Where-Object { $_.Name -ne $TenantId }
 
 #Get all subscriptions
 $subscriptions = Get-AzSubscription

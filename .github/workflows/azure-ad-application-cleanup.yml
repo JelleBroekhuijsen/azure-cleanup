@@ -1,0 +1,30 @@
+# .github/workflows/azure-ad-application-cleanup.yml
+name: Clean-up Azure AD Application Registrations
+
+on:
+    workflow_dispatch: # allows to run manually
+    schedule: 
+    - cron: '0 0 * * *' # every day at midnight    
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  azure-management-group-cleanup:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check Out
+      uses: actions/checkout@v3
+    - name: Azure Login without subscription
+      uses: azure/login@v1
+      with:
+        client-id: ${{ secrets.AZURE_CLIENT_ID }}
+        tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+        allow-no-subscriptions: true
+        enable-AzPSSession: true
+    - name: Execute script to remove azure ad application registrations'
+      uses: azure/powershell@v1
+      with:
+        inlineScript: ./Remove-AzAdApplications.ps1
+        azPSVersion: latest

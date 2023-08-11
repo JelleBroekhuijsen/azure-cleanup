@@ -21,7 +21,7 @@ jobs:
         tenant-id: ${{ secrets.AZURE_TENANT_ID }}
         allow-no-subscriptions: true
         enable-AzPSSession: true
-    - name: Execute script to remove custom policies'
+    - name: Execute script to remove custom policies
       uses: azure/powershell@v1
       with:
         inlineScript: ./Remove-AzPolicies.ps1

@@ -21,7 +21,7 @@ jobs:
         tenant-id: ${{ secrets.AZURE_TENANT_ID }}
         allow-no-subscriptions: true
         enable-AzPSSession: true
-    - name: Execute script to remove management groups'
+    - name: Execute script to remove management groups
       uses: azure/powershell@v1
       with:
         inlineScript: ./Remove-AzManagementGroups.ps1 -TenantId ${{ secrets.AZURE_TENANT_ID }}

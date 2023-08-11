@@ -15,11 +15,7 @@
 #>
 
 [CmdletBinding()]
-param (
-    [Parameter(Mandatory)]
-    [string]
-    $TenantId
-)
+param()
 
 $ErrorActionPreference = 'Continue'
 

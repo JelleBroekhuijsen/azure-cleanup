@@ -48,7 +48,7 @@ $lingeringManagementGroups = [System.Collections.Concurrent.ConcurrentBag[PSObje
 
 do{
   $managementGroups | ForEach-Object -Parallel {
-    $localLingeringManagementGroups = $using:lingeringManagementGroupCount
+    $localLingeringManagementGroups = $using:lingeringManagementGroups
     $managementGroup = Get-AzManagementGroup -GroupName $_.Name -ErrorAction SilentlyContinue
     if($null -ne $managementGroup){
       Write-Output "Attempting to remove management group: $($managementGroup.Name)"

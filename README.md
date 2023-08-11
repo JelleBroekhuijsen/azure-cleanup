@@ -7,10 +7,12 @@ This repository contains a set of scripts and workflows to cleanup an Azure tena
 ![Azure Resource Cleanup](https://github.com/JelleBroekhuijsen/azure-cleanup/actions/workflows/azure-resource-cleanup.yml/badge.svg)
 ![Azure Management Group Cleanup](https://github.com/JelleBroekhuijsen/azure-cleanup/actions/workflows/azure-management-group-cleanup.yml/badge.svg)
 ![Azure Policy Cleanup](https://github.com/JelleBroekhuijsen/azure-cleanup/actions/workflows/azure-policy-cleanup.yml/badge.svg)
+![Azure AD Application Cleanup](https://github.com/JelleBroekhuijsen/azure-cleanup/actions/workflows/azure-ad-application-cleanup.yml/badge.svg)
 
 - Perform daily cleanup of Azure Resource Groups that do not have a tag of 'persistent' set to 'true'.
 - Perform a manually triggered cleanup of Azure Management Groups.
 - Perform a manually triggered cleanup of Azure Policies.
+- Perform daily cleanup of Azure AD Applications that do not have a tag 'persistent'.
 
 ## Requirements
 

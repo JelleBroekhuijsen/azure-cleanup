@@ -44,9 +44,11 @@ $assignments | ForEach-Object -Parallel {
 
 #Remove the entire hierachy of management groups
 Write-Output "Attempting to remove $($managementGroups.Count) management groups"
-$lingeringManagementGroupCount = 0 
+$lingeringManagementGroups = [System.Collections.Concurrent.ConcurrentBag[PSObject]]::new()
+
 do{
   $managementGroups | ForEach-Object -Parallel {
+    $localLingeringManagementGroups = $using:lingeringManagementGroupCount
     $managementGroup = Get-AzManagementGroup -GroupName $_.Name -ErrorAction SilentlyContinue
     if($null -ne $managementGroup){
       Write-Output "Attempting to remove management group: $($managementGroup.Name)"
@@ -54,16 +56,16 @@ do{
     }
     else{
       Write-Output "Deleted management group '$($_.Name)' added to lingering management group count"
-      $lingeringManagementGroupCount++
+      $localLingeringManagementGroups.Add($_)
     }
   }
   $managementGroups = Get-AzManagementGroup | Where-Object { $_.Name -ne $TenantId }
-  if($managementGroups.Count -gt 0 -and $lingeringManagementGroupCount -lt $managementGroups.Count){
-    Write-Output "Found $($managementGroups.Count - $lingeringManagementGroupCount) remaining management groups to remove"
+  if($managementGroups.Count -gt 0 -and $lingeringManagementGroups.Count -lt $managementGroups.Count){
+    Write-Output "Found $($managementGroups.Count - $lingeringManagementGroups.Count) remaining management groups to remove"
     Write-Output "Waiting 30 seconds before retrying"
-    $lingeringManagementGroupCount = 0
+    $localLingeringManagementGroups.Clear()
     Start-Sleep -Seconds 30
   }
 }
-while($managementGroups.Count -gt 0 -and $lingeringManagementGroupCount -lt $managementGroups.Count)
+while($managementGroups.Count -gt 0 -and $lingeringManagementGroups.Count -lt $managementGroups.Count)
 Write-Output "Successfully removed all management groups"

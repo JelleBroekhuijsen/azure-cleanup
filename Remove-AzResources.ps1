@@ -23,7 +23,7 @@ param (
     $SubscriptionId
 )
 
-$ErrorActionPreference = 'SilentlyContinue'
+$ErrorActionPreference = 'Continue'
 
 #Set subscription context
 $subscription = Set-AzContext -SubscriptionId $SubscriptionId

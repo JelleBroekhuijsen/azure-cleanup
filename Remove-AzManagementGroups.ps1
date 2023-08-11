@@ -23,7 +23,7 @@ param (
     $TenantId
 )
 
-$ErrorActionPreference = 'SilentlyContinue'
+$ErrorActionPreference = 'Continue'
 
 #Get all management groups except the root group
 $managementGroups = Get-AzManagementGroup | Where-Object { $_.Name -ne $TenantId }
@@ -50,7 +50,7 @@ do{
     $managementGroup = Get-AzManagementGroup -GroupName $_.Name -ErrorAction SilentlyContinue
     if($null -ne $managementGroup){
       Write-Output "Attempting to remove management group: $($managementGroup.Name)"
-      Remove-AzManagementGroup -GroupName $managementGroup.Name -ErrorAction SilentlyContinue
+      Remove-AzManagementGroup -GroupName $managementGroup.Name -ErrorAction Continue
     }
     else{
       Write-Output "Deleted management group '$($_.Name)' added to lingering management group count"

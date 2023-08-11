@@ -20,6 +20,7 @@ The workflows utilize a Service Principal to perform the cleanup. The Service Pr
 
 - Contributor on the subscriptions if you want to perform resource cleanup.
 - Owner on the root tenant group if you want to perform management group cleanup.
+- Cloud Application Administrator on Azure AD if you want to perform Azure AD Application cleanup.
 
 The workflows rely on OpenId Connect for authentication. See [this](https://learn.microsoft.com/en-us/azure/developer/github/connect-from-azure?tabs=azure-portal%2Cwindows#use-the-azure-login-action-with-openid-connect) for info on how to configure your SPN for OIDC-authentication.
 

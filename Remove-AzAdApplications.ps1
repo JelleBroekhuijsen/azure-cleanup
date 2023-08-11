@@ -24,6 +24,7 @@ $failures = [System.Collections.Concurrent.ConcurrentBag[PSObject]]::new()
 
 #Get all application registrations
 $applications = Get-AzADApplication -ErrorAction Stop
+Write-Output "Found $($applications.Count) applications in directory"
 
 #Create a concurrent bag to store applications for removal
 $applicationForRemoval = [System.Collections.Concurrent.ConcurrentBag[PSObject]]::new()

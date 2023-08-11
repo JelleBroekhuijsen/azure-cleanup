@@ -63,7 +63,7 @@ do{
   if($managementGroups.Count -gt 0 -and $lingeringManagementGroups.Count -lt $managementGroups.Count){
     Write-Output "Found $($managementGroups.Count - $lingeringManagementGroups.Count) remaining management groups to remove"
     Write-Output "Waiting 30 seconds before retrying"
-    $localLingeringManagementGroups.Clear()
+    $lingeringManagementGroups.Clear()
     Start-Sleep -Seconds 30
   }
 }

@@ -31,7 +31,7 @@ Write-Output "Found $($initiatives.Count) custom initiatives to remove"
 $initiatives | ForEach-Object -Parallel {
   $localFailures = $using:failures
   Write-Output "Removing initiative '$($_.Properties.DisplayName)'"
-  $result = Remove-AzPolicySetDefinition -Id $_.Id -Force
+  $result = Remove-AzPolicySetDefinition -Id $_.ResourceId -Force
   if ($result -ne $true) {
     Write-Warning "Failed to remove initiative '$($_.Properties.DisplayName)'"
     $localFailures.Add($_)
@@ -43,7 +43,7 @@ Write-Output "Found $($policies.Count) custom policies to remove"
 $policies | ForEach-Object -Parallel {
   $localFailures = $using:failures
   Write-Output "Removing policy '$($_.Properties.DisplayName)'"
-  $result = Remove-AzPolicyDefinition -Id $_.Id -Force
+  $result = Remove-AzPolicyDefinition -Id $_.ResourceId -Force
   if ($result -ne $true) {
     Write-Warning "Failed to remove policy '$($_.Properties.DisplayName)'"
     $localFailures.Add($_)

@@ -8,7 +8,7 @@
 .PARAMETER SubscriptionId
   The subscription id to run the script against
 .NOTES
-  Version:        1.1.2
+  Version:        1.1.3
   Author:         Jelle Broekhuijsen - jll.io Consultancy
   Creation Date:  8/8/2023
   
@@ -68,6 +68,7 @@ $resourceGroupsWithoutPersistence | ForEach-Object -Parallel {
 
   if ($result -ne $true) {
     Write-Warning "Failed to remove resource group: $($_.ResourceGroupName)"
+    $localFailures.Add($_)
   }
 }
 

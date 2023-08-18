@@ -4,10 +4,10 @@ This repository contains a set of scripts and workflows to cleanup an Azure tena
 
 ## Current features
 
-![Azure Resource Cleanup](https://github.com/JelleBroekhuijsen/azure-cleanup/actions/workflows/azure-resource-cleanup.yml/badge.svg)(https://github.com/JelleBroekhuijsen/azure-cleanup/actions/workflows/azure-resource-cleanup.yml)
-![Azure Management Group Cleanup](https://github.com/JelleBroekhuijsen/azure-cleanup/actions/workflows/azure-management-group-cleanup.yml/badge.svg)(https://github.com/JelleBroekhuijsen/azure-cleanup/actions/workflows/azure-management-group-cleanup.yml)
-![Azure Policy Cleanup](https://github.com/JelleBroekhuijsen/azure-cleanup/actions/workflows/azure-policy-cleanup.yml/badge.svg)(https://github.com/JelleBroekhuijsen/azure-cleanup/actions/workflows/azure-policy-cleanup.yml)
-![Azure AD Application Cleanup](https://github.com/JelleBroekhuijsen/azure-cleanup/actions/workflows/azure-ad-application-cleanup.yml/badge.svg)(https://github.com/JelleBroekhuijsen/azure-cleanup/actions/workflows/azure-ad-application-cleanup.yml)
+[![Azure Resource Cleanup](https://github.com/JelleBroekhuijsen/azure-cleanup/actions/workflows/azure-resource-cleanup.yml/badge.svg)](https://github.com/JelleBroekhuijsen/azure-cleanup/actions/workflows/azure-resource-cleanup.yml)
+[![Azure Management Group Cleanup](https://github.com/JelleBroekhuijsen/azure-cleanup/actions/workflows/azure-management-group-cleanup.yml/badge.svg)](https://github.com/JelleBroekhuijsen/azure-cleanup/actions/workflows/azure-management-group-cleanup.yml)
+[![Azure Policy Cleanup](https://github.com/JelleBroekhuijsen/azure-cleanup/actions/workflows/azure-policy-cleanup.yml/badge.svg)](https://github.com/JelleBroekhuijsen/azure-cleanup/actions/workflows/azure-policy-cleanup.yml)
+[![Azure AD Application Cleanup](https://github.com/JelleBroekhuijsen/azure-cleanup/actions/workflows/azure-ad-application-cleanup.yml/badge.svg)](https://github.com/JelleBroekhuijsen/azure-cleanup/actions/workflows/azure-ad-application-cleanup.yml)
 
 - Perform daily cleanup of Azure Resource Groups that do not have a tag of 'persistent' set to 'true'.
 - Perform a manually triggered cleanup of Azure Management Groups.

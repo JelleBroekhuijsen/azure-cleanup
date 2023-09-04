@@ -8,7 +8,7 @@
 .NOTES
   Version:        1.0.1
   Author:         Jelle Broekhuijsen - jll.io Consultancy
-  Creation Date:  11/8/2023
+  Last Update:  4/9/2023
   
 .EXAMPLE
   ./Remove-AzAdApplications.ps1
@@ -24,7 +24,7 @@ $failures = [System.Collections.Concurrent.ConcurrentBag[PSObject]]::new()
 
 #Get all application registrations
 $applications = Get-AzADApplication -ErrorAction Stop
-Write-Output "Found $($applications.Count) applications in directory"
+Write-Output "Found $($applications.Count) applications in directory."
 
 #Create a concurrent bag to store applications for removal
 $applicationForRemoval = [System.Collections.Concurrent.ConcurrentBag[PSObject]]::new()
@@ -34,27 +34,27 @@ $applications | ForEach-Object -Parallel {
   $localApplicationForRemoval = $using:applicationForRemoval
   $application = Get-AzADApplication -ObjectId $_.Id | Select-Object DisplayName, Id, AppId, Tag
   if ($application.Tag -notcontains 'persistent') {
-    Write-Output "Marked application '$($application.DisplayName)' for removal"
+    Write-Output "Marked application '$($application.DisplayName)' for removal."
     $localApplicationForRemoval.Add($application)
   } 
 }
 
 #Remove applications
-Write-Output "Found $($applicationForRemoval.Count) applications to remove"
+Write-Output "Found $($applicationForRemoval.Count) applications to remove."
 $applicationForRemoval | ForEach-Object -Parallel {
   $localFailures = $using:failures
-  Write-Output "Removing application '$($_.DisplayName)'"
+  Write-Output "Removing application '$($_.DisplayName)'..."
   try {
     Remove-AzADApplication -ObjectId $_.Id -ErrorAction Stop
   }
   catch {
-    Write-Warning "Failed to remove application '$($_.DisplayName)'"
+    Write-Warning "Failed to remove application '$($_.DisplayName)'."
     $localFailures.Add($_)
   }
 }
 
 #Report failures
 if ($failures.Count -gt 0) {
-  Throw "Failed to remove $($failures.count) applications"
+  Throw "Failed to remove $($failures.count) applications."
 }
 

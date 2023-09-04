@@ -27,7 +27,7 @@ $ErrorActionPreference = 'Continue'
 
 #Set subscription context
 $subscription = Set-AzContext -SubscriptionId $SubscriptionId
-Write-Output "Connected to Azure subscription: $($subscription.Name)"
+Write-Output "Connected to Azure subscription: $($subscription.Name)."
 
 #Get all resource groups that are not tagged with 'persistent = true'
 $resourceGroups = Get-AzResourceGroup -ErrorAction Stop
@@ -52,28 +52,28 @@ $resourceGroups | ForEach-Object -Parallel {
   }
 }
 
-Write-Output "Found $($resourceGroupsWithoutPersistence.Count) resource groups to remove"
+Write-Output "Found $($resourceGroupsWithoutPersistence.Count) resource groups to remove."
 
 #Terminate if no resource groups are found
 if ($resourceGroupsWithoutPersistence.Count -eq 0) {
-  Write-Output "No resource groups to remove"
+  Write-Output "No resource groups to remove."
   break
 }
 
 #Remove resource groups
 $resourceGroupsWithoutPersistence | ForEach-Object -Parallel {
   $localFailures = $using:failures
-  Write-Output "Removing resource group: $($_.ResourceGroupName)"
+  Write-Output "Removing resource group: $($_.ResourceGroupName)."
   $result = Remove-AzResourceGroup -Name $_.ResourceGroupName -Force
 
   if ($result -ne $true) {
-    Write-Warning "Failed to remove resource group: $($_.ResourceGroupName)"
+    Write-Warning "Failed to remove resource group: $($_.ResourceGroupName)."
     $localFailures.Add($_)
   }
 }
 
 #Report failures
 if ($failures.Count -gt 0) {
-  Throw "Failed to remove $($failures.Count) resource groups"
+  Throw "Failed to remove $($failures.Count) resource groups."
 }
 

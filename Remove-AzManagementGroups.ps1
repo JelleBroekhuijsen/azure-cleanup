@@ -10,7 +10,7 @@
 .NOTES
   Version:        1.1.2
   Author:         Jelle Broekhuijsen - jll.io Consultancy
-  Creation Date:  8/8/2023
+  Last Update:  4/9/2023
   
 .EXAMPLE
   ./Remove-AzManagementGroups.ps1 -TenantId 00000000-0000-0000-0000-000000000000
@@ -43,16 +43,16 @@ $assignments = $managementGroups | ForEach-Object {
 #Reset all subscriptions to the root group
 $assignments | ForEach-Object -Parallel {
   $localFailures = $using:failures
-  Write-Output "Reset subscription: $(($_.Id -split '/')[-1]) to root group"
+  Write-Output "Reset subscription: $(($_.Id -split '/')[-1]) to root group."
   $result = Remove-AzManagementGroupSubscription -GroupName ($_.Parent -split '/')[-1]  -SubscriptionId ($_.Id -split '/')[-1]
   if($result -ne $true) {
-    Write-Warning "Failed to reset subscription: $(($_.Id -split '/')[-1]) to root group"
+    Write-Warning "Failed to reset subscription: $(($_.Id -split '/')[-1]) to root group."
     $localFailures.Add($result)
   }
 }
 
 #Remove the entire hierachy of management groups
-Write-Output "Attempting to remove $($managementGroups.Count) management groups"
+Write-Output "Attempting to remove $($managementGroups.Count) management groups."
 $lingeringManagementGroups = [System.Collections.Concurrent.ConcurrentBag[PSObject]]::new()
 
 do {
@@ -61,29 +61,29 @@ do {
     $localFailures = $using:failures
     $managementGroup = Get-AzManagementGroup -GroupName $_.Name -ErrorAction SilentlyContinue
     if ($null -ne $managementGroup) {
-      Write-Output "Attempting to remove management group: $($managementGroup.Name)"
+      Write-Output "Attempting to remove management group: $($managementGroup.Name)."
       $result = Remove-AzManagementGroup -GroupName $managementGroup.Name -ErrorAction Continue
       if ($result -ne $true) {
-        Write-Warning "'Remove-AzManagementGroup -GroupId $($managementGroup.Name)' did not return 'true', this will result in the script retrying the removal of this management group"
+        Write-Warning "'Remove-AzManagementGroup -GroupId $($managementGroup.Name)' did not return 'true', this will result in the script retrying the removal of this management group."
       }
     }
     else {
-      Write-Output "Deleted management group '$($_.Name)' added to lingering management group count"
+      Write-Output "Deleted management group '$($_.Name)' added to lingering management group count."
       $localLingeringManagementGroups.Add($_)
     }
   }
   $managementGroups = Get-AzManagementGroup | Where-Object { $_.Name -ne $TenantId }
   if ($managementGroups.Count -gt 0 -and $lingeringManagementGroups.Count -lt $managementGroups.Count) {
-    Write-Output "Found $($managementGroups.Count - $lingeringManagementGroups.Count) remaining management groups to remove"
-    Write-Output "Waiting 30 seconds before retrying"
+    Write-Output "Found $($managementGroups.Count - $lingeringManagementGroups.Count) remaining management groups to remove."
+    Write-Output "Waiting 30 seconds before retrying..."
     $lingeringManagementGroups.Clear()
     Start-Sleep -Seconds 30
   }
 }
 while ($managementGroups.Count -gt 0 -and $lingeringManagementGroups.Count -lt $managementGroups.Count)
-Write-Output "Successfully removed all management groups"
+Write-Output "Successfully removed all management groups."
 
 #Report failures
 if($failures.Count -gt 0) {
-  Throw "Failed to remove $($failures.Count) management groups"
+  Throw "Failed to remove $($failures.Count) management groups."
 }

@@ -28,42 +28,42 @@ $initiatives = Get-AzPolicySetDefinition -ErrorAction Stop| Where-Object { $_.Pr
 $failures = [System.Collections.Concurrent.ConcurrentBag[PSObject]]::new()
 
 #Remove all custom assignments
-Write-Output "Found $($assignments.Count) custom assignments to remove"
+Write-Output "Found $($assignments.Count) custom assignments to remove."
 $assignments | ForEach-Object -Parallel {
   $localFailures = $using:failures
-  Write-Output "Removing assignment '$($_.Properties.DisplayName)'"
+  Write-Output "Removing assignment '$($_.Properties.DisplayName)'..."
   $result = Remove-AzPolicyAssignment -Id $_.ResourceId -Force
   if ($result -ne $true) {
-    Write-Warning "Failed to remove assignment '$($_.Properties.DisplayName)'"
+    Write-Warning "Failed to remove assignment '$($_.Properties.DisplayName)'."
     $localFailures.Add($_)
   }
 }
 
 #Remove all custom initiatives
-Write-Output "Found $($initiatives.Count) custom initiatives to remove"
+Write-Output "Found $($initiatives.Count) custom initiatives to remove."
 $initiatives | ForEach-Object -Parallel {
   $localFailures = $using:failures
-  Write-Output "Removing initiative '$($_.Properties.DisplayName)'"
+  Write-Output "Removing initiative '$($_.Properties.DisplayName)'."
   $result = Remove-AzPolicySetDefinition -Id $_.ResourceId -Force
   if ($result -ne $true) {
-    Write-Warning "Failed to remove initiative '$($_.Properties.DisplayName)'"
+    Write-Warning "Failed to remove initiative '$($_.Properties.DisplayName)'."
     $localFailures.Add($_)
   }
 }
 
 #Remove all custom policies
-Write-Output "Found $($policies.Count) custom policies to remove"
+Write-Output "Found $($policies.Count) custom policies to remove."
 $policies | ForEach-Object -Parallel {
   $localFailures = $using:failures
-  Write-Output "Removing policy '$($_.Properties.DisplayName)'"
+  Write-Output "Removing policy '$($_.Properties.DisplayName)'..."
   $result = Remove-AzPolicyDefinition -Id $_.ResourceId -Force
   if ($result -ne $true) {
-    Write-Warning "Failed to remove policy '$($_.Properties.DisplayName)'"
+    Write-Warning "Failed to remove policy '$($_.Properties.DisplayName)'."
     $localFailures.Add($_)
   }
 }
 
 #Report failures
 if ($failures.Count -gt 0) {
-  Throw "Failed to remove $($failures.count) policies/initiatives"
+  Throw "Failed to remove $($failures.count) policies/initiatives."
 }

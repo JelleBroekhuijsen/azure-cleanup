@@ -6,9 +6,9 @@
 .DESCRIPTION
   Script to delete all custom policies in a tenant
 .NOTES
-  Version:        1.0.1
+  Version:        1.1.0
   Author:         Jelle Broekhuijsen - jll.io Consultancy
-  Creation Date:  11/8/2023
+  Last Update:  4/9/2023
   
 .EXAMPLE
   ./Remove-AzManagementGroups.ps1
@@ -19,12 +19,25 @@ param()
 
 $ErrorActionPreference = 'Continue'
 
-#Retrieve all custom Azure Policy definitions and initiatives
+#Retrieve all custom Azure Policy assignments, definitions and initiatives
+$assignments = Get-AzPolicyAssignment -ErrorAction Stop | Where-Object { $_.Properties.PolicyType -eq 'Custom' }
 $policies = Get-AzPolicyDefinition -ErrorAction Stop | Where-Object { $_.Properties.PolicyType -eq 'Custom' }
 $initiatives = Get-AzPolicySetDefinition -ErrorAction Stop| Where-Object { $_.Properties.PolicyType -eq 'Custom' }
 
 #Create a concurrent bag to store failures
 $failures = [System.Collections.Concurrent.ConcurrentBag[PSObject]]::new()
+
+#Remove all custom assignments
+Write-Output "Found $($assignments.Count) custom assignments to remove"
+$assignments | ForEach-Object -Parallel {
+  $localFailures = $using:failures
+  Write-Output "Removing assignment '$($_.Properties.DisplayName)'"
+  $result = Remove-AzPolicyAssignment -Id $_.ResourceId -Force
+  if ($result -ne $true) {
+    Write-Warning "Failed to remove assignment '$($_.Properties.DisplayName)'"
+    $localFailures.Add($_)
+  }
+}
 
 #Remove all custom initiatives
 Write-Output "Found $($initiatives.Count) custom initiatives to remove"
@@ -49,7 +62,6 @@ $policies | ForEach-Object -Parallel {
     $localFailures.Add($_)
   }
 }
-
 
 #Report failures
 if ($failures.Count -gt 0) {

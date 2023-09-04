@@ -10,7 +10,7 @@
 .NOTES
   Version:        1.1.3
   Author:         Jelle Broekhuijsen - jll.io Consultancy
-  Creation Date:  8/8/2023
+  Last Update:  4/9/2023
   
 .EXAMPLE
   ./Remove-AzResources.ps1 -SubscriptionId 00000000-0000-0000-0000-000000000000

@@ -8,7 +8,7 @@
 .PARAMETER TenantId
   The tenant id to run the script against
 .NOTES
-  Version:        1.1.1
+  Version:        1.1.2
   Author:         Jelle Broekhuijsen - jll.io Consultancy
   Creation Date:  8/8/2023
   
@@ -64,8 +64,7 @@ do {
       Write-Output "Attempting to remove management group: $($managementGroup.Name)"
       $result = Remove-AzManagementGroup -GroupName $managementGroup.Name -ErrorAction Continue
       if ($result -ne $true) {
-        Write-Warning "Failed to remove management group: $($managementGroup.Name)"
-        $localFailures.Add($result)
+        Write-Warning "'Remove-AzManagementGroup -GroupId $($managementGroup.Name)' did not return 'true', this will result in the script retrying the removal of this management group"
       }
     }
     else {

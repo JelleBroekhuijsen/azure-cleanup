@@ -6,12 +6,12 @@
 .DESCRIPTION
   Script to delete all custom policies in a tenant
 .NOTES
-  Version:        1.1.0
+  Version:        1.1.1
   Author:         Jelle Broekhuijsen - jll.io Consultancy
   Last Update:  4/9/2023
   
 .EXAMPLE
-  ./Remove-AzManagementGroups.ps1
+  ./Remove-AzPolicies.ps1
 #>
 
 [CmdletBinding()]
